@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-stone-base text-ink font-sans antialiased;
+    margin: 0;
+    min-height: 100dvh;
+  }
+
+  /* Warm-stone base with a 2.5% grain, applied once at the root. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: var(--grain);
+    opacity: 0.025;
+    mix-blend-mode: multiply;
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-[-0.015em];
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid #1D4B4A;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: #D98C2B;
+    color: #1C1A17;
+  }
+
+  /* Bangla script needs a touch more line height to breathe. */
+  html[lang='bn'] body {
+    line-height: 1.6;
+  }
+}
+
+@layer components {
+  .surface {
+    @apply bg-stone-raised border border-stone-line;
+  }
+
+  .rule {
+    @apply border-0 border-t border-stone-line;
+  }
+
+  .num {
+    @apply font-mono tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  .label-field {
+    @apply block text-[13px] font-semibold text-ink-soft mb-1.5;
+  }
+
+  .skeleton {
+    @apply bg-stone-deep animate-pulse rounded;
+  }
+}
+
+@media print {
+  body::before { display: none; }
+  .no-print { display: none !important; }
+  body { background: #fff; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
