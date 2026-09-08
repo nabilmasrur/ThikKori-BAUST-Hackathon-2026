@@ -18,26 +18,21 @@ export default function ProviderApp() {
   const provider = session?.role === 'provider' ? db?.providers.find((p) => p.id === session.id) : undefined;
 
   if (!provider) {
-    return (
-      <Routes>
-        <Route path="login" element={<ProviderLogin />} />
-        <Route path="*" element={<ProviderLogin />} />
-      </Routes>
-    );
+    return <Navigate to="/login?role=provider" replace />;
   }
 
   return (
-    <div className="min-h-[100dvh]">
+    <div className="flex min-h-[100dvh] w-full flex-col bg-transparent">
       <TopBar
         home="/provider"
-        who={{ name: provider.business_name, sub: t(`tier.${provider.tier}`) }}
+        who={{ name: provider.business_name, sub: t('nav.provider') }}
         items={[
           { to: '/provider', label: t('nav.dashboard'), end: true },
           { to: '/provider/finances', label: t('nav.finances') },
           { to: '/provider/growth', label: t('nav.growth') },
         ]}
       />
-      <main className="mx-auto max-w-5xl px-4 py-6">
+      <main className="mx-auto max-w-7xl px-4 py-6 w-full flex-1">
         <Routes>
           <Route index element={<ProviderDashboard provider={provider} />} />
           <Route path="login" element={<Navigate to="/provider" replace />} />

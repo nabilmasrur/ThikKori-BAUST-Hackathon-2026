@@ -123,16 +123,16 @@ export function CustomerHome({ customer }: { customer: Customer }) {
         </div>
       </section>
 
-      {recent.length > 0 && (
-        <section>
-          <SectionTitle
-            title={t('home.recent')}
-            action={
-              <Link to="/customer/bookings" className="text-[13px] font-semibold text-teal hover:underline">
-                {t('common.view')}
-              </Link>
-            }
-          />
+      <section>
+        <SectionTitle
+          title={t('home.recent')}
+          action={
+            <Link to="/customer/bookings" className="text-[13px] font-semibold text-teal hover:underline">
+              {t('common.view')}
+            </Link>
+          }
+        />
+        {recent.length > 0 ? (
           <div className="grid gap-2">
             {recent.map((b) => {
               const req = db.requests.find((r) => r.id === b.request_id);
@@ -148,8 +148,12 @@ export function CustomerHome({ customer }: { customer: Customer }) {
               );
             })}
           </div>
-        </section>
-      )}
+        ) : (
+          <Card className="p-4 text-[13.5px] text-ink-soft">
+            You don't have any recent past jobs.
+          </Card>
+        )}
+      </section>
     </div>
   );
 }

@@ -27,7 +27,7 @@ export function TopBar({
 
   return (
     <header className="no-print sticky top-0 z-40 border-b border-stone-line bg-stone-base/85 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
+      <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3">
         <button
           type="button"
           onClick={() => navigate(-1)}

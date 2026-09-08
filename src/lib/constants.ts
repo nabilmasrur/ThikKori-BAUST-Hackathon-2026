@@ -11,7 +11,7 @@ export function env(key: string, fallback: string): string {
 }
 
 /** Platform commission taken on every invoice. Configurable via env. */
-export const PLATFORM_FEE_RATE = Number(env('VITE_PLATFORM_FEE_RATE', '0.05'));
+export const PLATFORM_FEE_RATE = Number(env('VITE_PLATFORM_FEE_RATE', '0.02'));
 
 /**
  * Match Score weights.

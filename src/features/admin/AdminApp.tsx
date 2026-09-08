@@ -29,12 +29,7 @@ export default function AdminApp() {
   const { t } = useFmt();
 
   if (session?.role !== 'admin') {
-    return (
-      <Routes>
-        <Route path="login" element={<AdminLogin />} />
-        <Route path="*" element={<AdminLogin />} />
-      </Routes>
-    );
+    return <Navigate to="/login?role=admin" replace />;
   }
 
   const nav = [

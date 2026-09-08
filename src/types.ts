@@ -35,6 +35,8 @@ export type AnnouncementTarget = 'all' | 'customers' | 'providers';
 export interface Customer {
   id: string;
   name: string;
+  email: string;
+  password?: string;
   phone: string;
   area: string;
   address: string;
@@ -47,6 +49,8 @@ export interface Customer {
 export interface Provider {
   id: string;
   name: string;
+  email: string;
+  password?: string;
   business_name: string;
   phone: string;
   service_categories: string[];

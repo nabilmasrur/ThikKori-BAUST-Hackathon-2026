@@ -1,15 +1,17 @@
 import { Suspense, lazy } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { DataProvider, useData } from '@/state/DataContext';
 import { SessionProvider, useSession } from '@/state/SessionContext';
 import { ToastProvider } from '@/state/ToastContext';
 import { Spinner } from '@/components/ui';
 import { LanguageSelect } from '@/features/language/LanguageSelect';
-import { PanelSelect } from '@/features/panels/PanelSelect';
+import { UnifiedLogin } from '@/features/auth/UnifiedLogin';
 import { NotFound } from '@/features/errors/NotFound';
 import { ConnectionError } from '@/features/errors/ConnectionError';
 import { WelcomePage } from '@/features/welcome/WelcomePage';
 import { SignupPage } from '@/features/welcome/SignupPage';
+import { PageTransition } from '@/components/PageTransition';
 
 // Each panel is its own bundle — the customer never downloads the admin app.
 const CustomerApp = lazy(() => import('@/features/customer/CustomerApp'));
@@ -42,17 +44,19 @@ function Shell() {
 
   return (
     <Suspense fallback={<Spinner />}>
-      <Routes>
-        <Route path="/" element={<WelcomePage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/language" element={<LanguageSelect />} />
-        <Route path="/panels" element={<PanelSelect />} />
-        <Route path="/customer/*" element={<CustomerApp />} />
-        <Route path="/provider/*" element={<ProviderApp />} />
-        <Route path="/admin/*" element={<AdminApp />} />
-        <Route path="/pay/:token" element={<PayPage />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageTransition><WelcomePage /></PageTransition>} />
+          <Route path="/signup" element={<PageTransition><SignupPage /></PageTransition>} />
+          <Route path="/language" element={<PageTransition><LanguageSelect /></PageTransition>} />
+          <Route path="/login" element={<PageTransition><UnifiedLogin /></PageTransition>} />
+          <Route path="/customer/*" element={<PageTransition><CustomerApp /></PageTransition>} />
+          <Route path="/provider/*" element={<PageTransition><ProviderApp /></PageTransition>} />
+          <Route path="/admin/*" element={<PageTransition><AdminApp /></PageTransition>} />
+          <Route path="/pay/:token" element={<PageTransition><PayPage /></PageTransition>} />
+          <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+        </Routes>
+      </AnimatePresence>
     </Suspense>
   );
 }

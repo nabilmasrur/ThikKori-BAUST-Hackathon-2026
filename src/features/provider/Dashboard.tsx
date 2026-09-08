@@ -209,9 +209,9 @@ export function ProviderDashboard({ provider }: { provider: Provider }) {
         )}
       </section>
 
-      {recent.length > 0 && (
-        <section>
-          <SectionTitle title={t('provider.completed')} />
+      <section>
+        <SectionTitle title={t('provider.completed')} />
+        {recent.length > 0 ? (
           <div className="grid gap-2">
             {recent.map((b) => {
               const req = db.requests.find((r) => r.id === b.request_id);
@@ -226,8 +226,12 @@ export function ProviderDashboard({ provider }: { provider: Provider }) {
               );
             })}
           </div>
-        </section>
-      )}
+        ) : (
+          <Card className="p-4 text-[13.5px] text-ink-soft">
+            You don't have any recent past jobs.
+          </Card>
+        )}
+      </section>
 
       <Modal open={Boolean(shownInvoice)} onClose={() => setQrFor(null)} title={t('provider.qrTitle')}>
         {shownInvoice && <PaymentQR invoice={shownInvoice} />}

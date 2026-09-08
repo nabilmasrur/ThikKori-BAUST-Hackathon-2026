@@ -13,9 +13,20 @@
   }
 
   body {
-    @apply bg-stone-base text-ink font-sans antialiased;
+    @apply text-ink font-sans antialiased;
     margin: 0;
     min-height: 100dvh;
+    background: radial-gradient(circle at top right, rgba(234, 240, 238, 0.4) 0%, rgba(249, 250, 251, 1) 100%), #F9FAFB;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    pointer-events: none;
+    background-image: var(--grain);
+    opacity: 0.08;
+    mix-blend-mode: multiply;
   }
 
   /* Warm-stone base with a 2.5% grain, applied once at the root. */

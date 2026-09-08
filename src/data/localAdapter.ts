@@ -2,7 +2,7 @@ import { buildSeed } from '@/data/seed';
 import { BackendUnreachable, PRIMARY_KEY, type DataAdapter, type Row } from '@/data/adapter';
 import type { Database, TableName } from '@/types';
 
-const STORAGE_KEY = 'thikkori.db.v1';
+const STORAGE_KEY = 'thikkori.db.v3';
 const CHANNEL = 'thikkori.sync';
 
 /**

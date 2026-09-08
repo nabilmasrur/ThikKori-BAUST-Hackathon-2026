@@ -21,16 +21,11 @@ export default function CustomerApp() {
   const customer = session?.role === 'customer' ? db?.customers.find((c) => c.id === session.id) : undefined;
 
   if (!customer) {
-    return (
-      <Routes>
-        <Route path="login" element={<CustomerLogin />} />
-        <Route path="*" element={<CustomerLogin />} />
-      </Routes>
-    );
+    return <Navigate to="/login?role=customer" replace />;
   }
 
   return (
-    <div className="min-h-[100dvh]">
+    <div className="flex min-h-[100dvh] w-full flex-col bg-transparent">
       <TopBar
         home="/customer"
         who={{ name: customer.name, sub: areaName(customer.area, locale) }}
@@ -40,7 +35,7 @@ export default function CustomerApp() {
           { to: '/customer/rewards', label: t('nav.rewards') },
         ]}
       />
-      <main className="mx-auto max-w-5xl px-4 py-6">
+      <main className="mx-auto max-w-7xl px-4 py-6 w-full flex-1">
         <Routes>
           <Route index element={<CustomerHome customer={customer} />} />
           <Route path="login" element={<Navigate to="/customer" replace />} />

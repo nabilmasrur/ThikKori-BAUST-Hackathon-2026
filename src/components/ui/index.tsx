@@ -274,9 +274,10 @@ export function Modal({
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', onKey);
+    // Only focus the first input once when the modal is opened
     ref.current?.querySelector<HTMLElement>('input,select,textarea,button')?.focus();
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open]); // Removed onClose to prevent focus stealing on parent re-renders
 
   if (!open) return null;
   return (

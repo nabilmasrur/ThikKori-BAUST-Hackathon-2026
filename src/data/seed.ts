@@ -163,6 +163,8 @@ export function buildSeed(now: Date = new Date()): Database {
     return {
       id: uuid(i + 1, 'cust'),
       name: c.name,
+      email: `customer${i + 1}@thikkori.com`,
+      password: 'demo123',
       phone: c.phone,
       area: area.name,
       address: c.address,
@@ -181,6 +183,8 @@ export function buildSeed(now: Date = new Date()): Database {
     return {
       id: uuid(i + 1, 'prov'),
       name: p.name,
+      email: `provider${i + 1}@thikkori.com`,
+      password: 'demo123',
       business_name: p.business,
       phone: `0181${(1000000 + i * 137).toString().slice(0, 7)}`,
       service_categories: p.cats,

@@ -40,7 +40,7 @@
     "signIn": "Sign in",
     "signOut": "Sign out",
     "signedInAs": "Signed in as",
-    "invalid": "Those credentials do not match an admin account.",
+    "invalid": "Invalid email or password.",
     "notFound": "No account matches that phone number.",
     "demoAccounts": "Demo accounts",
     "suspended": "This account is suspended. Contact support."
@@ -482,5 +482,69 @@
     "changeLanguage": "Change language",
     "goBack": "Go back",
     "star": "Rate {{n}} out of 5"
+  },
+  "welcome": {
+    "services": "Services",
+    "logIn": "Log in",
+    "signUp": "Sign up",
+    "becomeProvider": "Become a Provider",
+    "motoTitle": "Book trusted help",
+    "motoSubtitle": "for home tasks",
+    "searchPlaceholder": "What do you need help with?",
+    "popularProjects": "Popular Projects",
+    "testimonialsTitle": "See what happy customers are saying about ThikKori",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "allRightsReserved": "All rights reserved.",
+    "projects": {
+      "move": {
+        "title": "Flat-Rate Move",
+        "price": "from 1000৳"
+      },
+      "clean": {
+        "title": "Home & Apartment Cleaning",
+        "price": "starting at 1500৳"
+      },
+      "plumb": {
+        "title": "Minor Plumbing Repairs",
+        "price": "starting at 800৳"
+      },
+      "elect": {
+        "title": "Electrical Help",
+        "price": "starting at 900৳"
+      }
+    },
+    "reviews": {
+      "r1": {
+        "name": "Rahim Sheikh",
+        "text": "Kamal fixed my AC in less than 30 minutes. He was very professional and left the place spotless. Thank you.",
+        "service": "AC Repair"
+      },
+      "r2": {
+        "name": "Tanjila R.",
+        "text": "I called Rafiq to fix the basin. He arrived quickly and fixed the leak without any hassle. Very satisfied!",
+        "service": "Plumbing"
+      },
+      "r3": {
+        "name": "Shariful I.",
+        "text": "Took this service for shifting the whole flat. From packaging to unloading—everything was perfect. No furniture was damaged.",
+        "service": "Moving"
+      },
+      "r4": {
+        "name": "Fatema A.",
+        "text": "They did a great deep cleaning. My kitchen and bathroom are shining like new. I will definitely call them again.",
+        "service": "Deep Cleaning"
+      },
+      "r5": {
+        "name": "Minarul H.",
+        "text": "Called to mount the TV on the wall. Mounted it perfectly with the right measurements. His behavior was also very polite.",
+        "service": "TV Mounting"
+      },
+      "r6": {
+        "name": "Nusrat J.",
+        "text": "The microwave oven broke, they came home and fixed it at a very low cost. Running great now. Very useful service.",
+        "service": "Appliance Repair"
+      }
+    }
   }
 }
