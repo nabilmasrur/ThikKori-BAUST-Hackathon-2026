@@ -1,5 +1,6 @@
 # ThikKori — ঠিক করি
 
+![1st Place](https://img.shields.io/badge/🏆_1st_Place-BAUST_CSE_FEST_2026-D98C2B?style=for-the-badge)
 **Smart home service Automation.** BAUST CSE FEST 2026 hackathon build.
 
 > *How can technology reduce the manual effort required to request, assign, schedule and complete everyday services?*
