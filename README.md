@@ -1,6 +1,6 @@
 # ThikKori — ঠিক করি
 
-**Smart home service automation for Dhaka.** BAUST CSE FEST 2026 hackathon build.
+**Smart home service Automation.** BAUST CSE FEST 2026 hackathon build.
 
 > *How can technology reduce the manual effort required to request, assign, schedule and complete everyday services?*
 
