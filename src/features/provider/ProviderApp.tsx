@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { TopBar } from '@/components/TopBar';
-import { ProviderLogin } from '@/features/auth/ProviderLogin';
 import { NotFound } from '@/features/errors/NotFound';
 import { useData } from '@/state/DataContext';
 import { useSession } from '@/state/SessionContext';
@@ -9,6 +8,7 @@ import { ProviderDashboard } from '@/features/provider/Dashboard';
 import { JobDetail } from '@/features/provider/JobDetail';
 import { Finances } from '@/features/provider/Finances';
 import { Growth } from '@/features/provider/Growth';
+import { ProviderProfile } from '@/features/provider/Profile';
 
 export default function ProviderApp() {
   const { session } = useSession();
@@ -25,7 +25,7 @@ export default function ProviderApp() {
     <div className="flex min-h-[100dvh] w-full flex-col bg-transparent">
       <TopBar
         home="/provider"
-        who={{ name: provider.business_name, sub: t('nav.provider') }}
+        who={{ name: provider.business_name, sub: t('nav.provider'), profileUrl: '/provider/profile' }}
         items={[
           { to: '/provider', label: t('nav.dashboard'), end: true },
           { to: '/provider/finances', label: t('nav.finances') },
@@ -39,6 +39,7 @@ export default function ProviderApp() {
           <Route path="job/:bookingId" element={<JobDetail provider={provider} />} />
           <Route path="finances" element={<Finances provider={provider} />} />
           <Route path="growth" element={<Growth provider={provider} />} />
+          <Route path="profile" element={<ProviderProfile provider={provider} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

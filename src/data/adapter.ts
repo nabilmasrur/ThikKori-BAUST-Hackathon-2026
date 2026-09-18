@@ -17,6 +17,7 @@ export const PRIMARY_KEY: Record<TableName, string> = {
   provider_costs: 'id',
   admin_announcements: 'id',
   reported_issues: 'id',
+  signup_requests: 'id',
 };
 
 export type Row<T extends TableName> = Database[T][number];

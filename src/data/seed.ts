@@ -613,5 +613,6 @@ export function buildSeed(now: Date = new Date()): Database {
     provider_costs,
     admin_announcements,
     reported_issues,
+    signup_requests: [],
   };
 }

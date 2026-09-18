@@ -396,3 +396,152 @@ export async function reportIssue(
     { id: newId(), status: 'open', admin_note: null, created_at: now(), ...args },
   ]);
 }
+
+// ── Signup request flow ──────────────────────────────────────────────
+
+import type { SignupRequest } from '@/types';
+
+export async function submitSignupRequest(
+  adapter: DataAdapter,
+  db: Database,
+  args: {
+    role: 'customer' | 'provider';
+    name: string;
+    email: string;
+    password: string;
+    phone: string;
+    profession: string;
+  },
+): Promise<{ ok: boolean; error?: string }> {
+  // Duplicate email check — across both existing users and pending requests
+  const emailLower = args.email.trim().toLowerCase();
+  const existingCustomer = db.customers.find((c) => c.email?.toLowerCase() === emailLower);
+  const existingProvider = db.providers.find((p) => p.email?.toLowerCase() === emailLower);
+  const existingRequest = db.signup_requests.find(
+    (r) => r.email.toLowerCase() === emailLower && r.status === 'pending',
+  );
+  if (existingCustomer || existingProvider) return { ok: false, error: 'email_taken' };
+  if (existingRequest) return { ok: false, error: 'already_pending' };
+
+  const req: SignupRequest = {
+    id: newId(),
+    role: args.role,
+    name: args.name.trim(),
+    email: emailLower,
+    password: args.password,
+    phone: args.phone.trim(),
+    profession: args.profession.trim(),
+    status: 'pending',
+    created_at: now(),
+    reviewed_at: null,
+  };
+
+  await adapter.insert('signup_requests', [req]);
+
+  // Also append to CSV via Vite dev-server endpoint (best-effort)
+  try {
+    await fetch('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        role: args.role,
+        name: req.name,
+        phone: req.phone,
+        email: req.email,
+        profession: req.profession,
+      }),
+    });
+  } catch { /* offline / prod — silently skip */ }
+
+  return { ok: true };
+}
+
+/**
+ * Admin approves a signup request → creates a real customer/provider account.
+ * The new user can now login with the email + password they chose at signup.
+ */
+export async function approveSignupRequest(
+  adapter: DataAdapter,
+  db: Database,
+  reqId: string,
+  assignedCategories?: string[]
+): Promise<void> {
+  const req = db.signup_requests.find((r) => r.id === reqId);
+  if (!req || req.status !== 'pending') return;
+
+  const ts = now();
+  await adapter.update('signup_requests', reqId, { status: 'approved', reviewed_at: ts });
+
+  if (req.role === 'customer') {
+    const area = 'Dhanmondi';
+    const newCustomer = {
+      id: newId(),
+      name: req.name,
+      email: req.email,
+      password: req.password,
+      phone: req.phone,
+      area,
+      address: `${req.name}'s address, ${area}`,
+      trust_score: 80,
+      preferred_language: 'en' as const,
+      suspended: false,
+      created_at: ts,
+    };
+    await adapter.insert('customers', [newCustomer]);
+  } else {
+    let cats = assignedCategories;
+    if (!cats || cats.length === 0) {
+      // Fallback Provider — use profession as the first service category if it maps to a known one
+      const catMap: Record<string, string> = {
+        'ac repair': 'appliance', 'plumber': 'plumbing', 'plumbing': 'plumbing',
+        'electrician': 'electrical', 'electrical': 'electrical', 'cleaning': 'cleaning',
+        'pest control': 'cleaning', 'maintenance': 'maintenance', 'moving': 'moving',
+        'shifting': 'moving', 'car': 'carcare', 'beauty': 'personal', 'personal': 'personal',
+      };
+      const profLower = req.profession.toLowerCase();
+      const matchedCat = Object.keys(catMap).find((k) => profLower.includes(k));
+      cats = matchedCat ? [catMap[matchedCat]] : ['appliance'];
+    }
+
+    const newProvider = {
+      id: newId(),
+      name: req.name,
+      email: req.email,
+      password: req.password,
+      business_name: `${req.name} Services`,
+      phone: req.phone,
+      service_categories: cats,
+      rating: 0,
+      ratings_count: 0,
+      completed_jobs_count: 0,
+      total_earnings: 0,
+      total_costs: 0,
+      tier: 'beginner' as const,
+      base_area: 'Dhanmondi',
+      base_lat: 23.7461,
+      base_lng: 90.3742,
+      service_radius_km: 8,
+      hourly_rate: 400,
+      qr_code_url: '',
+      preferred_language: 'en' as const,
+      is_online: true,
+      suspended: false,
+      flagged_for_review: false,
+      created_at: ts,
+    };
+    await adapter.insert('providers', [newProvider]);
+  }
+}
+
+/**
+ * Admin rejects a signup request.
+ */
+export async function rejectSignupRequest(
+  adapter: DataAdapter,
+  reqId: string,
+): Promise<void> {
+  await adapter.update('signup_requests', reqId, {
+    status: 'rejected',
+    reviewed_at: now(),
+  });
+}

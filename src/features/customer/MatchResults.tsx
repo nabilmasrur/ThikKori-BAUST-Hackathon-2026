@@ -140,6 +140,43 @@ export function MatchResults({ customer }: { customer: Customer }) {
                   </div>
                 </div>
 
+                {/* Slot availability for this specific provider */}
+                {(() => {
+                  const providerBookings = db.bookings.filter(
+                    (bk) =>
+                      bk.provider_id === provider.id &&
+                      bk.confirmed_date === request.preferred_date &&
+                      !['cancelled', 'completed'].includes(bk.status),
+                  );
+                  const takenSlots = new Set(providerBookings.map((bk) => bk.confirmed_slot));
+                  const requestedSlot = request.preferred_time_window;
+                  const isRequiredSlotTaken = takenSlots.has(requestedSlot);
+
+                  if (isRequiredSlotTaken) {
+                    return (
+                      <div className="mt-3 flex items-center gap-2 rounded-lg border border-brick/30 bg-brick-wash px-3 py-2 text-[12.5px] text-brick">
+                        <span>⚠️</span>
+                        <span>
+                          <strong>{fmtSlot(requestedSlot)}</strong> is already booked for this provider.
+                          Available slot: <strong>{fmtSlot(b.slot)}</strong>
+                        </span>
+                      </div>
+                    );
+                  }
+                  if (takenSlots.size > 0) {
+                    return (
+                      <div className="mt-3 flex items-center gap-2 rounded-lg border border-amber/30 bg-amber/10 px-3 py-2 text-[12.5px] text-amber-700">
+                        <span>ℹ️</span>
+                        <span>
+                          Confirmed slot: <strong>{fmtSlot(b.slot)}</strong>
+                          {' '}· Some slots are taken by other bookings.
+                        </span>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
                 {/* Explainable breakdown — the same numbers the ranking used. */}
                 <div className="mt-4 rounded-lg border border-stone-line bg-stone-base/50 p-3.5">
                   <p className="mb-2.5 text-[12px] font-semibold text-ink-soft">{t('match.why')}</p>

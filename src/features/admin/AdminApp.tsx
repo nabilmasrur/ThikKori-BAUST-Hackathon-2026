@@ -1,9 +1,9 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { Logo } from '@/components/Logo';
 import { LanguageToggle } from '@/components/LanguageToggle';
-import { AdminLogin } from '@/features/auth/AdminLogin';
 import { NotFound } from '@/features/errors/NotFound';
 import { useSession } from '@/state/SessionContext';
+import { useData } from '@/state/DataContext';
 import { useFmt } from '@/lib/useFmt';
 import { cn } from '@/lib/cn';
 import {
@@ -23,17 +23,22 @@ import { CategoriesAdmin } from '@/features/admin/Categories';
 import { Issues } from '@/features/admin/Issues';
 import { Analytics } from '@/features/admin/Analytics';
 import { Announcements } from '@/features/admin/Announcements';
+import { SignupRequests } from '@/features/admin/SignupRequests';
 
 export default function AdminApp() {
   const { session, signOut } = useSession();
+  const { db } = useData();
   const { t } = useFmt();
 
   if (session?.role !== 'admin') {
     return <Navigate to="/login?role=admin" replace />;
   }
 
+  const pendingSignups = db?.signup_requests.filter((r) => r.status === 'pending').length ?? 0;
+
   const nav = [
     { to: '/admin', end: true, label: t('nav.overview'), icon: <IconGrid size={18} /> },
+    { to: '/admin/signups', label: `Signups${pendingSignups > 0 ? ` (${pendingSignups})` : ''}`, icon: <IconUsers size={18} /> },
     { to: '/admin/monitor', label: t('nav.monitor'), icon: <IconInbox size={18} /> },
     { to: '/admin/providers', label: t('nav.providers'), icon: <IconWrench size={18} /> },
     { to: '/admin/customers', label: t('nav.customers'), icon: <IconUsers size={18} /> },
@@ -96,6 +101,7 @@ export default function AdminApp() {
           <Routes>
             <Route index element={<Overview />} />
             <Route path="login" element={<Navigate to="/admin" replace />} />
+            <Route path="signups" element={<SignupRequests />} />
             <Route path="monitor" element={<Monitor />} />
             <Route path="providers" element={<ProvidersAdmin />} />
             <Route path="customers" element={<CustomersAdmin />} />

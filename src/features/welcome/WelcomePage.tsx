@@ -5,12 +5,14 @@ import { Logo } from '@/components/Logo';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { CategoryIcon, IconSearch, IconStar } from '@/components/Icons';
 import { CATEGORIES } from '@/data/seed';
+import { useData } from '@/state/DataContext';
 import { useFmt } from '@/lib/useFmt';
 
 export function WelcomePage() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const { t, locale } = useFmt();
+  const { db } = useData();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,7 +168,35 @@ export function WelcomePage() {
            </motion.h2>
            
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16">
-             {REVIEWS.map((review, i) => (
+             {db?.reviews.length ? db.reviews.slice(0, 6).map((review, i) => {
+               const c = db.customers.find(c => c.id === review.customer_id);
+               const p = db.providers.find(p => p.id === review.provider_id);
+               return (
+                 <motion.div 
+                   initial={{ opacity: 0, y: 20 }}
+                   whileInView={{ opacity: 1, y: 0 }}
+                   viewport={{ once: true }}
+                   transition={{ delay: i * 0.05 }}
+                   key={review.id} 
+                   className="flex flex-col group"
+                 >
+                   <div className="flex items-center gap-3 mb-4">
+                     <h4 className="font-bold text-[18px] text-ink">{c?.name || 'Customer'}</h4>
+                     <div className="flex items-center text-[#E8B923]">
+                       {[...Array(review.rating)].map((_, j) => (
+                         <IconStar key={j} size={18} filled />
+                       ))}
+                     </div>
+                   </div>
+                   <p className="text-[16px] text-ink-soft leading-relaxed mb-5 flex-1 group-hover:text-ink transition-colors">
+                     "{review.comment}"
+                   </p>
+                   <Link to="/login?role=customer" className="text-[16px] font-bold text-[#0A5840] hover:text-teal-deep hover:underline transition-all">
+                     Service by {p?.business_name || 'Provider'} →
+                   </Link>
+                 </motion.div>
+               );
+             }) : REVIEWS.map((review, i) => (
                <motion.div 
                  initial={{ opacity: 0, y: 20 }}
                  whileInView={{ opacity: 1, y: 0 }}

@@ -32,6 +32,21 @@ export type IssueStatus = 'open' | 'resolved' | 'escalated';
 
 export type AnnouncementTarget = 'all' | 'customers' | 'providers';
 
+export type SignupRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export interface SignupRequest {
+  id: string;
+  role: 'customer' | 'provider';
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  profession: string; // provider only
+  status: SignupRequestStatus;
+  created_at: string;
+  reviewed_at: string | null;
+}
+
 export interface Customer {
   id: string;
   name: string;
@@ -40,6 +55,7 @@ export interface Customer {
   phone: string;
   area: string;
   address: string;
+  avatar_url?: string;
   trust_score: number;
   preferred_language: Locale;
   suspended: boolean;
@@ -53,6 +69,7 @@ export interface Provider {
   password?: string;
   business_name: string;
   phone: string;
+  avatar_url?: string;
   service_categories: string[];
   rating: number;
   ratings_count: number;
@@ -263,6 +280,7 @@ export interface Database {
   provider_costs: ProviderCost[];
   admin_announcements: AdminAnnouncement[];
   reported_issues: ReportedIssue[];
+  signup_requests: SignupRequest[];
 }
 
 export type TableName = keyof Database;

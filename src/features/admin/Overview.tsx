@@ -78,6 +78,33 @@ export function Overview() {
           })}
         </Card>
       </section>
+
+      <section>
+        <SectionTitle title="Customer Reviews" />
+        {db.reviews.length > 0 ? (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {db.reviews.map(r => {
+              const c = db.customers.find(c => c.id === r.customer_id);
+              const p = db.providers.find(p => p.id === r.provider_id);
+              return (
+                <Card key={r.id} className="p-4 flex flex-col gap-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <div className="font-semibold text-[14px]">{c?.name || 'Unknown'}</div>
+                      <div className="text-[12px] text-ink-soft">to {p?.name || 'Unknown'}</div>
+                    </div>
+                    <Badge tone={r.rating >= 4 ? 'sage' : r.rating <= 2 ? 'brick' : 'amber'}>{r.rating} / 5</Badge>
+                  </div>
+                  <p className="text-[13px] text-ink italic">"{r.comment}"</p>
+                  <div className="mt-auto text-[11px] text-ink-faint pt-2">{dateTime(r.created_at)}</div>
+                </Card>
+              );
+            })}
+          </div>
+        ) : (
+          <Card className="p-4 text-[13.5px] text-ink-soft">No reviews submitted yet.</Card>
+        )}
+      </section>
     </div>
   );
 }

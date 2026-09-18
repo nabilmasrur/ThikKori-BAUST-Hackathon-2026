@@ -9,7 +9,7 @@ import { STATUS_TONE } from '@/features/customer/statusTone';
 import type { Customer } from '@/types';
 
 export function CustomerHome({ customer }: { customer: Customer }) {
-  const { db } = useData();
+  const { db, adapter, refresh } = useData();
   const { t, locale, taka, num, date, slot } = useFmt();
   const navigate = useNavigate();
   if (!db) return null;
@@ -137,13 +137,66 @@ export function CustomerHome({ customer }: { customer: Customer }) {
             {recent.map((b) => {
               const req = db.requests.find((r) => r.id === b.request_id);
               const cat = db.service_categories.find((c) => c.id === req?.service_category_id);
+              const hasReview = db.reviews.some(r => r.booking_id === b.id);
               return (
-                <Card key={b.id} className="flex items-center gap-3 p-3.5">
-                  <IconClock size={18} className="shrink-0 text-ink-faint" />
-                  <span className="min-w-0 flex-1 truncate text-[14px]">{categoryName(cat, locale)}</span>
-                  <span className="num shrink-0 text-[12.5px] text-ink-faint">{shortRef(b.id)}</span>
-                  <span className="num shrink-0 text-[13px] font-semibold">{taka(b.agreed_price)}</span>
-                  <Badge tone={STATUS_TONE[b.status]}>{t(`status.${b.status}`)}</Badge>
+                <Card key={b.id} className="flex flex-col gap-3 p-3.5 sm:flex-row sm:items-center">
+                  <div className="flex flex-1 items-center gap-3 min-w-0">
+                    <IconClock size={18} className="shrink-0 text-ink-faint" />
+                    <span className="min-w-0 flex-1 truncate text-[14px]">{categoryName(cat, locale)}</span>
+                    <span className="num hidden shrink-0 text-[12.5px] text-ink-faint sm:block">{shortRef(b.id)}</span>
+                    <span className="num shrink-0 text-[13px] font-semibold">{taka(b.agreed_price)}</span>
+                    <Badge tone={STATUS_TONE[b.status]}>{t(`status.${b.status}`)}</Badge>
+                  </div>
+                  
+                  {b.status === 'completed' && (
+                    <div className="flex shrink-0 items-center gap-2 border-t border-stone-line pt-2 sm:border-0 sm:pt-0 sm:pl-2 sm:border-l">
+                      {!hasReview ? (
+                        <Button 
+                          variant="accent" 
+                          size="sm" 
+                          className="flex-1 py-1 px-3 text-[12px] min-h-0"
+                          onClick={async () => {
+                            const rating = prompt('Rate out of 5:');
+                            const comment = prompt('Leave a review:');
+                            if (rating && comment) {
+                              const newReview = {
+                                id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
+                                booking_id: b.id,
+                                customer_id: b.customer_id,
+                                provider_id: b.provider_id,
+                                rating: Number(rating),
+                                comment,
+                                created_at: new Date().toISOString()
+                              };
+                              // In a real app we'd dispatch to adapter
+                              if (adapter) {
+                                await adapter.insert('reviews', [newReview]);
+                                alert('Review submitted! Admin can now see it.');
+                                await refresh();
+                              }
+                            }
+                          }}
+                        >
+                          Rate & Review
+                        </Button>
+                      ) : (
+                        <Badge tone="sage">Reviewed</Badge>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 py-1 px-3 text-[12px] min-h-0 text-brick border-brick/30 hover:bg-brick/5"
+                        onClick={() => {
+                          const reason = prompt('Why are you reporting this?');
+                          if (reason) {
+                            alert('Report submitted! Our team will review it.');
+                          }
+                        }}
+                      >
+                        Report
+                      </Button>
+                    </div>
+                  )}
                 </Card>
               );
             })}

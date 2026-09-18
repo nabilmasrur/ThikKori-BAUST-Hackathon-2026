@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { TopBar } from '@/components/TopBar';
-import { CustomerLogin } from '@/features/auth/CustomerLogin';
 import { NotFound } from '@/features/errors/NotFound';
 import { useData } from '@/state/DataContext';
 import { useSession } from '@/state/SessionContext';
@@ -12,6 +11,7 @@ import { MatchResults } from '@/features/customer/MatchResults';
 import { Tracking } from '@/features/customer/Tracking';
 import { MyBookings } from '@/features/customer/Bookings';
 import { Rewards } from '@/features/customer/Rewards';
+import { CustomerProfile } from '@/features/customer/Profile';
 
 export default function CustomerApp() {
   const { session } = useSession();
@@ -28,7 +28,7 @@ export default function CustomerApp() {
     <div className="flex min-h-[100dvh] w-full flex-col bg-transparent">
       <TopBar
         home="/customer"
-        who={{ name: customer.name, sub: areaName(customer.area, locale) }}
+        who={{ name: customer.name, sub: areaName(customer.area, locale), profileUrl: '/customer/profile' }}
         items={[
           { to: '/customer', label: t('nav.home'), end: true },
           { to: '/customer/bookings', label: t('nav.bookings') },
@@ -44,6 +44,7 @@ export default function CustomerApp() {
           <Route path="bookings" element={<MyBookings customer={customer} />} />
           <Route path="booking/:bookingId" element={<Tracking customer={customer} />} />
           <Route path="rewards" element={<Rewards customer={customer} />} />
+          <Route path="profile" element={<CustomerProfile customer={customer} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

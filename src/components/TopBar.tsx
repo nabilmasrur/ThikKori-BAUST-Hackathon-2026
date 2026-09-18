@@ -18,7 +18,7 @@ export function TopBar({
   home,
 }: {
   items: NavItem[];
-  who?: { name: string; sub?: string };
+  who?: { name: string; sub?: string; profileUrl?: string };
   home: string;
 }) {
   const { signOut } = useSession();
@@ -60,10 +60,17 @@ export function TopBar({
 
         <div className="ml-auto flex items-center gap-2">
           {who && (
-            <span className="hidden text-right leading-tight sm:block">
-              <span className="block text-[13px] font-semibold text-ink">{who.name}</span>
-              {who.sub && <span className="block text-[11px] text-ink-faint">{who.sub}</span>}
-            </span>
+            who.profileUrl ? (
+              <Link to={who.profileUrl} className="hidden text-right leading-tight sm:block hover:bg-stone-deep rounded-lg px-2 py-1 -mr-1 transition-colors">
+                <span className="block text-[13px] font-semibold text-ink">{who.name}</span>
+                {who.sub && <span className="block text-[11px] text-ink-faint">{who.sub}</span>}
+              </Link>
+            ) : (
+              <span className="hidden text-right leading-tight sm:block px-2 py-1 -mr-1">
+                <span className="block text-[13px] font-semibold text-ink">{who.name}</span>
+                {who.sub && <span className="block text-[11px] text-ink-faint">{who.sub}</span>}
+              </span>
+            )
           )}
           <LanguageToggle compact />
           <button
